@@ -131,6 +131,15 @@ Use Postman for testing.
 Future Improvements
 Add authentication using JWT
 
+
+| Class                           | Role                                                  |
+| ------------------------------- | ----------------------------------------------------- |
+| `SecurityConfig.java`           | Configures security filters and endpoint access       |
+| `JWTUtil.java`                  | Creates and validates JWT tokens                      |
+| `JWTFilter.java`                | Intercepts requests to check for a valid JWT          |
+
+
+
 Add email notifications
 
 Add Swagger documentation
