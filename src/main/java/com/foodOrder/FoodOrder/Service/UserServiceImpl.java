@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.foodOrder.FoodOrder.DTO.UserLoginRequestDTO;
 import com.foodOrder.FoodOrder.DTO.UserRequestDTO;
 import com.foodOrder.FoodOrder.DTO.UserResponseDTO;
 import com.foodOrder.FoodOrder.Exception.DuplicateResourceException;
 import com.foodOrder.FoodOrder.Exception.InvalidRequestException;
 import com.foodOrder.FoodOrder.Exception.ResourceNotFoundException;
 import com.foodOrder.FoodOrder.Repository.UserRepository;
+import com.foodOrder.FoodOrder.Security.JwtUtil;
 import com.foodOrder.FoodOrder.model.User;
 
 import jakarta.transaction.Transactional;
@@ -21,7 +24,13 @@ import jakarta.transaction.Transactional;
 public final class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwt;
 
     private UserResponseDTO convertToResponseDTO(User user) {
         UserResponseDTO response = new UserResponseDTO();
@@ -43,7 +52,8 @@ public final class UserServiceImpl implements UserService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        String passwordEncoded = passwordEncoder.encode(request.getPassword());
+        user.setPassword(passwordEncoded);
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
         user.setRole(request.getRole());
@@ -62,6 +72,19 @@ public final class UserServiceImpl implements UserService {
         User user = convertToEntity(request);
         User savedUser = userRepository.save(user);
         return convertToResponseDTO(savedUser);
+    }
+
+    // loginRequest
+    @Override
+    public String loginUser(UserLoginRequestDTO request) {
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
+                () -> new ResourceNotFoundException("User not present in system! Please Register first. Thankyou"));
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            String token = jwt.generateToken(request.getUsername());
+            return "User logged successfully" + request.getUsername() + "Bearer: " + token;
+        } else {
+            return "Invalid password. Please try again.";
+        }
     }
 
     // request for get user by id
