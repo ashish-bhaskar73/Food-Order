@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.foodOrder.FoodOrder.DTO.UserLoginRequestDTO;
 import com.foodOrder.FoodOrder.DTO.UserRequestDTO;
 import com.foodOrder.FoodOrder.DTO.UserResponseDTO;
 import com.foodOrder.FoodOrder.Service.UserService;
@@ -26,13 +27,18 @@ public class UserController {
     private UserService userService;
 
     // Create user
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO request) {
         UserResponseDTO response = userService.createUser(request);
         return ResponseEntity.status(201).body(response);
     }
 
-
+    // login User
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestDTO request) {
+        String response = userService.loginUser(request);
+        return ResponseEntity.ok(response);
+    }
 
     // get user by id
     @GetMapping("/{id}")
