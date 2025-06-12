@@ -14,7 +14,6 @@ import com.foodOrder.FoodOrder.Exception.DuplicateResourceException;
 import com.foodOrder.FoodOrder.Exception.InvalidRequestException;
 import com.foodOrder.FoodOrder.Exception.ResourceNotFoundException;
 import com.foodOrder.FoodOrder.Repository.UserRepository;
-import com.foodOrder.FoodOrder.Security.JwtUtil;
 import com.foodOrder.FoodOrder.model.User;
 
 import jakarta.transaction.Transactional;
@@ -29,8 +28,8 @@ public final class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtUtil jwt;
+    // @Autowired
+    // private JwtUtil jwt;
 
     private UserResponseDTO convertToResponseDTO(User user) {
         UserResponseDTO response = new UserResponseDTO();
@@ -80,8 +79,8 @@ public final class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(
                 () -> new ResourceNotFoundException("User not present in system! Please Register first. Thankyou"));
         if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            String token = jwt.generateToken(request.getUsername());
-            return "User logged successfully" + request.getUsername() + "Bearer: " + token;
+            // String token = jwt.generateToken(request.getUsername());
+            return "User logged successfully" + request.getUsername() ;
         } else {
             return "Invalid password. Please try again.";
         }
