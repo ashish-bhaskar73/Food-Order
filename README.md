@@ -137,8 +137,7 @@ Add authentication using JWT
 | `SecurityConfig.java`           | Configures security filters and endpoint access       |
 | `JWTUtil.java`                  | Creates and validates JWT tokens                      |
 | `JWTFilter.java`                | Intercepts requests to check for a valid JWT          |
-| `CustomUserDetailsService.java` | Loads user from DB                                    |
-| `CustomUserDetails.java`        | Wrapper around your `User` entity for Spring Security |
+
 
 
 Add email notifications
